@@ -1,0 +1,100 @@
+Create a database called "contact"
+
+>use contact
+
+>shows dbs
+config   0.000GB
+local    0.000GB
+
+Create a collection called "contactlist"
+
+>db.createCollection('contactlist')
+
+>shows dbs
+config   0.000GB
+contact  0.000GB
+local    0.000GB
+
+Insert many documents  in "contactlist"
+>
+try{
+db.contactlist.insertMany( [
+      { LastName: "BenLahmer", FirstName: "Fares",Email:"fares@gmail.com",Age:26 },
+      { LastName: "Fatnassi", FirstName: "Sarra",Email:"sarra.f@gmail.com",Age:40},
+      { LastName: "Ben Yahia", FirstName: "Rym",Age:4 },
+      { LastName: "Cherif", FirstName: "Sami",Age:3}
+   ] );
+}
+catch(e){
+print(e);
+}
+
+
+{
+        "acknowledged" : true,
+        "insertedIds" : [
+                ObjectId("60f8713cc5d6cda5833c6575"),
+                ObjectId("60f8713cc5d6cda5833c6576"),
+                ObjectId("60f8713cc5d6cda5833c6577"),
+                ObjectId("60f8713cc5d6cda5833c6578")
+        ]
+}
+
+
+> db.contactlist.find()
+{ "_id" : ObjectId("60f8713cc5d6cda5833c6575"), "LastName" : "BenLahmer", "FirstName" : "Fares", "Email" : "fares@gmail.com", "Age" : 26 }
+{ "_id" : ObjectId("60f8713cc5d6cda5833c6576"), "LastName" : "Fatnassi", "FirstName" : "Sarra", "Email" : "sarra.f@gmail.com", "Age" : 40 }
+{ "_id" : ObjectId("60f8713cc5d6cda5833c6577"), "LastName" : "Ben Yahia", "FirstName" : "Rym", "Age" : 4 }
+{ "_id" : ObjectId("60f8713cc5d6cda5833c6578"), "LastName" : "Cherif", "FirstName" : "Sami", "Age" : 3 }
+
+
+Display all the information about only one person using his ID. 
+
+>db.contactlist.find({"_id":ObjectId("60f8713cc5d6cda5833c6575")})
+{ "_id" : ObjectId("60f8713cc5d6cda5833c6575"), "LastName" : "BenLahmer", "FirstName" : "Fares", "Email" : "fares@gmail.com", "Age" : 26 }
+
+Display all the contacts with an age >18.
+
+> db.contactlist.find({Age:{$gt:18}})
+{ "_id" : ObjectId("60f8713cc5d6cda5833c6575"), "LastName" : "BenLahmer", "FirstName" : "Fares", "Email" : "fares@gmail.com", "Age" : 26 }
+{ "_id" : ObjectId("60f8713cc5d6cda5833c6576"), "LastName" : "Fatnassi", "FirstName" : "Sarra", "Email" : "sarra.f@gmail.com", "Age" : 40 }
+
+Display all the contacts with an age>18 and name containing "ah".
+
+>db.contactlist.find({Age:{$gt:18},LastName:/ah/})
+{ "_id" : ObjectId("60f8713cc5d6cda5833c6575"), "LastName" : "BenLahmer", "FirstName" : "Fares", "Email" : "fares@gmail.com", "Age" : 26 }
+
+hange the contact's first name from"Cherif Sami" to "Cherif Anis". 
+> db.contactlist.update({FirstName:"Seif"},{$set:{FirstName:"Anis"}})
+WriteResult({ "nMatched" : 0, "nUpserted" : 0, "nModified" : 0 })
+> db.contactlist.update({FirstName:"Sami"},{$set:{FirstName:"Anis"}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+db.contactlist.find()
+{ "_id" : ObjectId("60f8713cc5d6cda5833c6575"), "LastName" : "BenLahmer", "FirstName" : "Fares", "Email" : "fares@gmail.com", "Age" : 26 }
+{ "_id" : ObjectId("60f8713cc5d6cda5833c6576"), "LastName" : "Fatnassi", "FirstName" : "Sarra", "Email" : "sarra.f@gmail.com", "Age" : 40 }
+{ "_id" : ObjectId("60f8713cc5d6cda5833c6577"), "LastName" : "Ben Yahia", "FirstName" : "Rym", "Age" : 4 }
+{ "_id" : ObjectId("60f8713cc5d6cda5833c6578"), "LastName" : "Cherif", "FirstName" : "Anis", "Age" : 3 }
+
+Delete the contacts that are aged under <5.
+
+> db.contactlist.remove({Age:{$lt:5}})
+WriteResult({ "nRemoved" : 2 })
+
+Display all of the contacts list.
+
+>  db.contactlist.find().pretty()
+{
+        "_id" : ObjectId("60f8713cc5d6cda5833c6575"),
+        "LastName" : "BenLahmer",
+        "FirstName" : "Fares",
+        "Email" : "fares@gmail.com",
+        "Age" : 26
+}
+{
+        "_id" : ObjectId("60f8713cc5d6cda5833c6576"),
+        "LastName" : "Fatnassi",
+        "FirstName" : "Sarra",
+        "Email" : "sarra.f@gmail.com",
+        "Age" : 40
+}
+>
